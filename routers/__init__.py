@@ -5,17 +5,17 @@ __all__ = [
 
 from aiogram import Dispatcher, Bot
 from aiogram.types import BotCommand, BotCommandScopeDefault
-from routers import start
+from routers import scanner
 
 
 def register_routes(dp: Dispatcher):
-    dp.include_router(start.router)
+    dp.include_router(scanner.router)
 
 
 async def register_commands_info(bot: Bot):
     await bot.set_my_commands(
         [
-            BotCommand(command='start', description='Регистрация или изменение данных о себе'),
+            BotCommand(command='/scanner', description='Запустить сканер'),
         ],
         scope=BotCommandScopeDefault()
     )

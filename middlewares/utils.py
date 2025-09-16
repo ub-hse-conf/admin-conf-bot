@@ -1,14 +1,23 @@
+from os import getenv
+
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.types import Message
+from aiogram.types import Message, WebAppInfo
 import re
+
+from dotenv import load_dotenv
 
 from api.hse_perm_helper import get_courses, get_programs
 from constants.texts import REGISTER_FAIL_BTN, REGISTER_OK_BTN, SCHEDULE_BTN, ACTIVITY_MAP_BTN, NU_KAK_TAM_S_DENGAMI_BTN
 from constants.transcription import type_of_program_dict
 
+load_dotenv()
+
+MINI_APP_URL = getenv("MINI_APP_URL")
+LOGIN_API = getenv("LOGIN_API")
+PASSWORD_API = getenv("PASSWORD_API")
 
 async def get_courses_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
@@ -83,6 +92,22 @@ def get_main_reply_keyboard():
         ],
         resize_keyboard=True
     )
+
+
+def get_mini_app_keyboard():
+    builder = InlineKeyboardBuilder()
+    url = MINI_APP_URL + f"?login={LOGIN_API}&password={PASSWORD_API}"
+    print(url)
+    builder.add(
+        InlineKeyboardButton(
+            web_app=WebAppInfo(
+                url=f"{url}"
+            ),
+            text="Scanner"
+        ),
+    )
+    builder.adjust(2)
+    return builder.as_markup()
 
 
 def parse_name(name: str) -> bool:
