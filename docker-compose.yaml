@@ -1,0 +1,37 @@
+services:
+  cub-admin-telegram-bot:
+    image: 'ub-hse-conf/cub-admin-telegram-bot'
+    deploy:
+      update_config:
+        order: start-first
+      restart_policy:
+        condition: on-failure
+    ports:
+      - published: 9091
+        target: 8081
+        protocol: tcp
+        mode: ingress
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: 127.0.0.1:24224
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    env_file: .env
+    networks:
+      - redis
+      - telegram-bot
+      - logging
+volumes:
+  redis_data:
+networks:
+  redis:
+    external: true
+  telegram-bot:
+    name: telegram-bot
+  logging:
+    external: true
