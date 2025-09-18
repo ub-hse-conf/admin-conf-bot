@@ -23,7 +23,7 @@ async def main():
     user_client = UserClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
     auth_client = AuthClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
 
-    auth_service = AuthService(auth_client, user_client)
+    auth_service = AuthService(auth_client, user_client, storage)
     activity_service = ActivityService()
 
     bot = CustomBot.create(BOT_TOKEN, storage, auth_service)
