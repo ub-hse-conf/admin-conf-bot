@@ -185,6 +185,8 @@ async def copy_visits_handler(query: CallbackQuery, state: FSMContext, activity_
     await state.set_state(ActivityState.copy_visits)
     await state.update_data(activity_id=query.data.split(":")[1])
 
+    get_logger().info("Handled start activity visits copy for id: %s", query.data.split(":")[1])
+
     activities = await activity_service.get_activities()
     buttons = []
     for activity in activities:
@@ -210,6 +212,8 @@ async def copy_visits_activity_confirmation_handler(query: CallbackQuery, state:
     from_activity_id = int(data["activity_id"])
     to_activity_id = int(query.data.split(":")[1])
 
+    get_logger().info("Handled activity visits copy confirmation from %d to %d", from_activity_id, to_activity_id)
+
     from_activity = await activity_service.get_activity(from_activity_id)
     to_activity = await activity_service.get_activity(to_activity_id)
 
@@ -230,6 +234,8 @@ async def copy_visits_activity_confirmation_handler(query: CallbackQuery, state:
 @router.callback_query(F.data.startswith("activity_visits_copy_confirm"))
 async def copy_visits_activity_handler(query: CallbackQuery, state: FSMContext, activity_service: ActivityService):
     from_activity_id, to_activity_id = query.data.split(":")[1:]
+    get_logger().info("Handled activity visits copy from %d to %d", int(from_activity_id), int(to_activity_id))
+
     await activity_service.copy_activity_visits(int(from_activity_id), int(to_activity_id))
     await query.answer("Вы успешно скопировали посещения")
     await query.message.delete()
