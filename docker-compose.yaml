@@ -24,12 +24,9 @@ services:
     env_file: .env
     networks:
       - redis-net
-      - telegram-bot
       - logging
 networks:
   redis-net:
     external: true
-  telegram-bot:
-    name: telegram-bot
   logging:
     external: true
