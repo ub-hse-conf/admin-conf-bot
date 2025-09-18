@@ -7,7 +7,7 @@ from aiogram import Dispatcher, Bot, Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import BotCommand, BotCommandScopeDefault, CallbackQuery
 
-from src.routers import scanner, activity, management
+from src.routers import scanner, activity, management, be_real
 from src.routers.auth import start, auth
 
 router = Router()
@@ -25,6 +25,7 @@ def register_routes(dp: Dispatcher):
     dp.include_router(auth.router)
     dp.include_router(scanner.router)
     dp.include_router(activity.router)
+    dp.include_router(be_real.router)
     dp.include_router(management.router)
 
 

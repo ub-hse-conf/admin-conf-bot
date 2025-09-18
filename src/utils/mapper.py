@@ -1,6 +1,7 @@
 from isodate import parse_duration
 
-from src.models import Error, ErrorType, Activity, ActivityType, ActivityEvent, ActivityEventStatus
+from src.models import Error, ErrorType, Activity, ActivityType, ActivityEvent, ActivityEventStatus, BeReal, \
+    BeRealStatus
 
 
 def parse_error(json: dict) -> Error:
@@ -25,5 +26,14 @@ def parse_activity_event(json: dict) -> ActivityEvent:
     return ActivityEvent(
         name=json["name"],
         status=ActivityEventStatus[json["status"]] if json["status"] else None,
+        duration=parse_duration(json["duration"]),
+    )
+
+def parse_be_real(json: dict) -> BeReal:
+    return BeReal(
+        id=json["id"],
+        name=json["name"],
+        description=json["description"],
+        status=BeRealStatus[json["status"]],
         duration=parse_duration(json["duration"]),
     )

@@ -23,4 +23,4 @@ class ActivityService:
         await self.activity_client.change_activity_event_status(activity_id, ActivityEventStatus.ENDED)
 
     async def copy_activity_visits(self, from_activity_id: int, to_activity_id: int):
-        pass
+        await self.activity_client.copy_activity_visits(from_activity_id, to_activity_id)

@@ -26,7 +26,7 @@ async def activity_handler(message: Message, activity_service: ActivityService):
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text=f"{activity.name} {activity.start_time}-{activity.end_time}",
+                    text=f"{get_event_emoji_or_nothing(activity.has_event)}{activity.name} {activity.start_time}-{activity.end_time}",
                     callback_data=f"activity:{activity.id}"
                 )
             ]
@@ -50,7 +50,7 @@ async def back_handler(query: CallbackQuery, activity_service: ActivityService):
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text=f"{activity.name} {activity.start_time}-{activity.end_time}",
+                    text=f"{get_event_emoji_or_nothing(activity.has_event)}{activity.name} {activity.start_time}-{activity.end_time}",
                     callback_data=f"activity:{activity.id}"
                 )
             ]
@@ -61,6 +61,12 @@ async def back_handler(query: CallbackQuery, activity_service: ActivityService):
     text = "Выбери активность для работы:"
 
     await query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+def get_event_emoji_or_nothing(has_event: bool) -> str:
+    if has_event:
+        return "▶️ "
+    else:
+        return ""
 
 
 @router.callback_query(F.data.startswith("activity:"))
@@ -97,7 +103,7 @@ async def select_activity_handler(callback_query: CallbackQuery, state: FSMConte
             case ActivityEventStatus.ENDED:
                 status = "✅ Завершен"
 
-        duration_text = "" if not event.duration else f"Продолжительность: {event.duration.seconds / 60} мин.\n"
+        duration_text = "" if not event.duration else f"Продолжительность: {event.duration.seconds // 60} мин.\n"
         event_text = (
             f"Событие: {event.name}\n"
             f"{duration_text}"
@@ -193,7 +199,7 @@ async def copy_visits_handler(query: CallbackQuery, state: FSMContext, activity_
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text=f"{activity.name} {activity.start_time}-{activity.end_time}",
+                    text=f"{get_event_emoji_or_nothing(activity.has_event)}{activity.name} {activity.start_time}-{activity.end_time}",
                     callback_data=f"activity_visits_copy_activity:{activity.id}"
                 )
             ]

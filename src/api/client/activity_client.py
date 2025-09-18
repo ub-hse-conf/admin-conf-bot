@@ -21,6 +21,12 @@ class ActivityClient(BaseClient):
         async with self as client:
             return await client._get_request_or_error(url)
 
+    async def copy_activity_visits(self, from_activity_id: int, to_activity_id: int) -> None | Error:
+        url = f"/activities/{from_activity_id}/visits-copy/${to_activity_id}"
+        client: ActivityClient
+        async with self as client:
+            return await client._post_request_or_error(url)
+
     async def change_activity_event_status(self, activity_id: int, activity_status: ActivityEventStatus) -> None | Error:
         url = f"/activities/{activity_id}/event/status"
         status = {

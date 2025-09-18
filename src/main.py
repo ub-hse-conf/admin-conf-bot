@@ -5,10 +5,10 @@ from aiogram import Dispatcher
 
 from src import routers, middlewares, api, custom_logging
 from src.api import endpoint, UserClient, AuthClient
-from src.api.client import ActivityClient
+from src.api.client import ActivityClient, TaskClient
 from src.bot import CustomBot
 from src.config import BOT_TOKEN, SERVER_URL, USERNAME_API, PASSWORD_API
-from src.services import AuthService, ActivityService
+from src.services import AuthService, ActivityService, TaskService
 from src.storage import create_bot_storage
 from src.version import get_version
 
@@ -24,14 +24,16 @@ async def main():
     user_client = UserClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
     auth_client = AuthClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
     activity_client = ActivityClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
+    task_client = TaskClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
 
     auth_service = AuthService(auth_client, user_client, storage)
     activity_service = ActivityService(activity_client)
+    task_service = TaskService(task_client)
 
     bot = CustomBot.create(BOT_TOKEN, storage, auth_service)
     await routers.register_commands_info(bot)
 
-    dp = Dispatcher(storage=storage, auth_service=auth_service, activity_service=activity_service)
+    dp = Dispatcher(storage=storage, auth_service=auth_service, activity_service=activity_service, task_service=task_service)
 
     app = api.create_app_instance(bot)
     endpoint.register_endpoints(app)
