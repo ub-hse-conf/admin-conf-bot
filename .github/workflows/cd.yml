@@ -29,6 +29,7 @@ jobs:
   test-and-lint:
     name: "Test and lint"
     runs-on: ubuntu-latest
+    needs: [validate-mr]
 
     steps:
       - name: Checkout repository
@@ -122,6 +123,7 @@ jobs:
   update-version:
     name: "Increase bot version"
     runs-on: ubuntu-latest
+    needs: deploy
     steps:
       - name: Checkout
         uses: actions/checkout@v4

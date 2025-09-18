@@ -1,7 +1,8 @@
 services:
   cub-admin-telegram-bot:
-    image: 'ub-hse-conf/cub-admin-telegram-bot'
+    image: ${IMAGE_TAG:-ghcr.io/ub-hse-conf/cub-admin-telegram-bot:stable}
     deploy:
+      mode: global
       update_config:
         order: start-first
       restart_policy:
