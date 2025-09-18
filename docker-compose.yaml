@@ -23,11 +23,11 @@ services:
       start_period: 15s
     env_file: .env
     networks:
-      - redis
+      - redis-net
       - telegram-bot
       - logging
 networks:
-  redis:
+  redis-net:
     external: true
   telegram-bot:
     name: telegram-bot
