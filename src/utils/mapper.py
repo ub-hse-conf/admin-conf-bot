@@ -16,7 +16,7 @@ def parse_activity(json: dict) -> Activity:
         name=json["name"],
         description=json["description"],
         activity_type=ActivityType[json["activityType"]],
-        has_event=False,
+        has_event=json["hasEvent"],
         location=json["location"],
         start_time=json["startTime"],
         end_time=json["endTime"],
