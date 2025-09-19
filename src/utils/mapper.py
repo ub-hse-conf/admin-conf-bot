@@ -26,7 +26,7 @@ def parse_activity_event(json: dict) -> ActivityEvent:
     return ActivityEvent(
         name=json["name"],
         status=ActivityEventStatus[json["status"]] if json["status"] else None,
-        duration=parse_duration(json["duration"]),
+        duration=parse_duration(json["duration"]) if json["duration"] else None,
     )
 
 def parse_be_real(json: dict) -> BeReal:
