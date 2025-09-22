@@ -5,7 +5,7 @@ from aiogram import Dispatcher
 
 from src import routers, middlewares, api, custom_logging
 from src.api import endpoint, UserClient, AuthClient
-from src.api.client import ActivityClient, TaskClient
+from src.api.client import ActivityClient, TaskClient, ConferenceClient
 from src.bot import CustomBot
 from src.config import BOT_TOKEN, SERVER_URL, USERNAME_API, PASSWORD_API
 from src.services import AuthService, ActivityService, TaskService
@@ -25,6 +25,7 @@ async def main():
     auth_client = AuthClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
     activity_client = ActivityClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
     task_client = TaskClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
+    conference_client = ConferenceClient(base_url=SERVER_URL, username=USERNAME_API, password=PASSWORD_API)
 
     auth_service = AuthService(auth_client, user_client, storage)
     activity_service = ActivityService(activity_client)
@@ -33,7 +34,8 @@ async def main():
     bot = CustomBot.create(BOT_TOKEN, storage, auth_service)
     await routers.register_commands_info(bot)
 
-    dp = Dispatcher(storage=storage, auth_service=auth_service, activity_service=activity_service, task_service=task_service)
+    dp = Dispatcher(storage=storage, auth_service=auth_service, activity_service=activity_service,
+                    task_service=task_service, conference_client=conference_client)
 
     app = api.create_app_instance(bot)
     endpoint.register_endpoints(app)
