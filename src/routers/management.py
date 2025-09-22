@@ -49,7 +49,7 @@ async def start_confirmation_conference_end_handler(callback_query: CallbackQuer
 
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="✅ Подтвердить", callback_data=f"finish_conference_confirm:{id}")],
+            [InlineKeyboardButton(text="✅ Подтвердить", callback_data=f"finish_conference_confirm")],
             [get_cancel_button()],
         ]
     )
