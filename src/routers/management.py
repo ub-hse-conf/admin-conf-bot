@@ -5,6 +5,7 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from structlog import get_logger
 
+from src.api.client import ConferenceClient
 from src.constants.menu import CONFERENCE_MANAGEMENT_BUTTON
 from src.constants.messages import MANAGE_COMMAND_TEXT, MANAGE_GENERATE_AUTH_CODE_TEXT
 from src.services import AuthService
@@ -36,9 +37,31 @@ async def conference_management(message: Message, auth_service: AuthService):
     await message.answer(MANAGE_COMMAND_TEXT, reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard))
 
 @router.callback_query(F.data == "finish_conference")
-async def finish_conference(callback_query: CallbackQuery):
+async def start_confirmation_conference_end_handler(callback_query: CallbackQuery):
+    get_logger().info("Handled ending conference confirmation")
+
+    await callback_query.answer("Вы собираетесь завершить конференцию. Подтвердите действие.", show_alert=True)
+
+    text = (
+        "*Подтверждение*\n"
+        f"*Вы собираетесь завершить конференцию!*"
+    )
+
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="✅ Подтвердить", callback_data=f"finish_conference_confirm:{id}")],
+            [get_cancel_button()],
+        ]
+    )
+
+    await callback_query.message.edit_text(text, reply_markup=keyboard)
+
+@router.callback_query(F.data == "finish_conference_confirm")
+async def finish_conference(query: CallbackQuery, conference_client: ConferenceClient):
     get_logger().info("Handled finish_conference callback query")
-    pass
+    await conference_client.end_conference()
+    await query.answer("🎉 Конференция завершена!")
+    await query.message.delete()
 
 @router.callback_query(F.data == "generate_auth_codes")
 async def generate_auth_codes(callback_query: CallbackQuery, state: FSMContext):
